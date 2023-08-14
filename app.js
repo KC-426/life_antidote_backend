@@ -25,8 +25,8 @@ const Enquiry_Routes = require("./routes/enquiry_routes");
 // App Routes
 app.use(
   cors({
-    origin: BASE_URL,
-    // origin: true,
+    // origin: BASE_URL,
+    origin: true,
     credentials: true,
   })
 );
