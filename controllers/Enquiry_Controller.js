@@ -3,9 +3,9 @@ const Enquiry_Schema = require("../modals/Enquiry");
 const makeEnquiry = async (req, res) => {
   try {
     console.log("Start");
-    const { name, phone_no, message, product_detail } = req.body;
+    const {medicine, name, email, phone_no, country, message, product_id } = req.body;
 
-    if (!name || !phone_no || !product_detail) {
+    if (!name || !phone_no || !product_id || !medicine || !email || !country) {
       res.status(400).json({
         success: false,
         message: "Please Fill All The Required Fields",
@@ -13,10 +13,13 @@ const makeEnquiry = async (req, res) => {
     }
 
     const enquiry_data = new Enquiry_Schema({
+      medicine: medicine, 
       name: name,
+      email: email, 
       phone_no: phone_no,
+      country: country,
       message: message,
-      product_detail: product_detail,
+      product_detail: product_id,
     });
 
     const result = await enquiry_data.save();

@@ -1,12 +1,24 @@
 const mongoose = require('mongoose')
 const Enquiry_Schema = new mongoose.Schema(
     {
+        medicine: {
+            type: String,
+            required: true
+        },
         name: {
+            type: String,
+            required: true
+        },
+        email: {
             type: String,
             required: true
         },
         phone_no: {
             type: Number,
+            required: true
+        },
+        country: {
+            type: String,
             required: true
         },
         message: {
