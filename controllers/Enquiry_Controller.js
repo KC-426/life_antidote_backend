@@ -13,6 +13,7 @@ const makeEnquiry = async (req, res) => {
     }
 
     const enquiry_data = new Enquiry_Schema({
+      // product_id: 
       medicine: medicine, 
       name: name,
       email: email, 
@@ -23,6 +24,8 @@ const makeEnquiry = async (req, res) => {
     });
 
     const result = await enquiry_data.save();
+    console.log(result)
+
     res.status(200).json({ message: "Data saved !!", result: result });
   } catch (err) {
     console.log(err);
