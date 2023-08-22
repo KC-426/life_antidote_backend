@@ -4,6 +4,7 @@ const makeEnquiry = async (req, res) => {
   try {
     console.log("Start");
     const {medicine, name, email, phone_no, country, message, product_id } = req.body;
+    console.log(req.body)
 
     if (!name || !phone_no || !product_id || !medicine || !email || !country) {
       res.status(400).json({
