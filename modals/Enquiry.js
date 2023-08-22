@@ -28,7 +28,7 @@ const Enquiry_Schema = new mongoose.Schema(
         product_detail: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Products',
-            // required: true
+            required: true
         }
     },
     {timestamps: true}
