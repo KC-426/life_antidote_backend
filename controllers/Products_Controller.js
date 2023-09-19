@@ -52,13 +52,17 @@ const createProducts = async (req, res) => {
 
 // get all products
 const getAllProducts = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+const pageSize = parseInt(req.query.pageSize) || 20; 
+const skip = (page - 1) * pageSize;
   try {
     const getProductsCount = await Products_Schema.find({}).count();
     const categoryForFilter = await Brands_Schema.aggregate([
       { $group: { _id: "$main_category_name" } },
     ]);
     const all_category_for_filter = await Brands_Schema.find({});
-    const allProducts = await Products_Schema.find({}).sort({ createdAt: -1 });
+    const allProducts = await Products_Schema.find({}).skip(skip)
+    .limit(pageSize).sort({ createdAt: -1 });
     // console.log(allProducts);
     res.status(200).send({
       allProducts: allProducts,
