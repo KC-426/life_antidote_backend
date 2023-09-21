@@ -67,22 +67,20 @@ const createCategory = async (req, res) => {
 const addNewBrand = async (req, res) => {
   try {
     console.log("start");
-    const newBrand = new Brands_Schema({
+    await Brands_Schema.create({
+      isBrand: true,
       main_category_name: req.body.mainCategory?.toLowerCase(),
       main_category_image: {
         // image_name: req.body.image_name?.toLowerCase(),
         image_url: req.body.image_url?.toLowerCase(),
         path: req.body.path?.toLowerCase(),
       },
-      isBrand: true
     });
-    const result = await newBrand.save();
-    if (main_category_image.isBrand) {
-      return true;
-    }
+    // const result = await newBrand.save();
+
     res.status(200).json({
       message: "Brand added successfully",
-      result: result,
+      // result: result,
     });
   } catch (err) {
     console.error(err);
@@ -109,11 +107,15 @@ const getBrands = async (req, res) => {
 };
 
 const updateBrand = async (req, res) => {
-  const { id } = req.params;
+  // const { id } = req.params;
   try {
-    const findBrands = await Brands_Schema.findById(id);
-    findBrands.isBrand = true;
-    await findBrands.save();
+    const findBrands = await Brands_Schema.find();
+    findBrands.forEach(async (data) => {
+      // data.isBrand = false
+      await Brands_Schema.findByIdAndUpdate(data._id, { isBrand: false });
+    });
+    // findBrands.isBrand = true;
+    // await findBrands.save();
 
     // if(findBrands.isBrand) {
     //   return true
@@ -306,11 +308,12 @@ const getAllCategory = async (req, res) => {
 
     allCategory?.forEach((ele) => {
       if (ele.isBrand == false) {
+        // console.log(ele.isBrand)
         category.push(ele);
         countCategory += 1;
       }
     });
-    // console.log("allCategory", allCategory?.isBrand);
+    // console.log("allCategory", category?.isBrand);
 
     res.status(200).send({
       all_categories: category,
@@ -497,4 +500,4 @@ exports.mainCategoryForProduct = mainCategoryForProduct;
 exports.deleteImage = deleteImage;
 exports.deleteCategory = deleteCategory;
 exports.createMainCategory = createMainCategory;
-exports.updateBrand = updateBrand
+exports.updateBrand = updateBrand;

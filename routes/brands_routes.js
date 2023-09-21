@@ -5,7 +5,7 @@ const Brands_Controller = require("../controllers/Brands_Controller");
 router.post("/create/category", Brands_Controller.createCategory);
 router.post("/add/brand", Brands_Controller.addNewBrand);
 router.get("/get/brand", Brands_Controller.getBrands);
-router.patch("/update/brand/:id", Brands_Controller.updateBrand);
+router.post("/update/brand", Brands_Controller.updateBrand);
 router.post("/create/maincategory", Brands_Controller.createMainCategory);
 router.get("/get/all/category", Brands_Controller.getAllCategory);
 router.get(
