@@ -66,7 +66,7 @@ const createCategory = async (req, res) => {
 
 const addNewBrand = async (req, res) => {
   try {
-    console.log('start')
+    console.log("start");
     const newBrand = new Brands_Schema({
       main_category_name: req.body.mainCategory?.toLowerCase(),
       main_category_image: {
@@ -74,9 +74,12 @@ const addNewBrand = async (req, res) => {
         image_url: req.body.image_url?.toLowerCase(),
         path: req.body.path?.toLowerCase(),
       },
+      isBrand: true
     });
     const result = await newBrand.save();
-
+    if (main_category_image.isBrand) {
+      return true;
+    }
     res.status(200).json({
       message: "Brand added successfully",
       result: result,
@@ -88,19 +91,43 @@ const addNewBrand = async (req, res) => {
 };
 
 const getBrands = async (req, res) => {
-    try {
-        const findBrands = await Brands_Schema.find({}); 
+  try {
+    const findBrands = await Brands_Schema.find({ isBrand: true });
 
-        res.status(200).json({
-            message: 'Fetched successfully !!',
-            findBrands: findBrands
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Internal Server Error !!" });
-    }
+    // if(findBrands.isBrand) {
+    //   return true
+    // }
+
+    res.status(200).json({
+      message: "Fetched successfully !!",
+      findBrands: findBrands,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal Server Error !!" });
+  }
 };
 
+const updateBrand = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const findBrands = await Brands_Schema.findById(id);
+    findBrands.isBrand = true;
+    await findBrands.save();
+
+    // if(findBrands.isBrand) {
+    //   return true
+    // }
+
+    res.status(200).json({
+      message: "Fetched successfully !!",
+      findBrands: findBrands,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal Server Error !!" });
+  }
+};
 
 // create main category
 const createMainCategory = async (req, res) => {
@@ -150,7 +177,8 @@ const editCategory = async (req, res) => {
 const updateMainCategory = async (req, res) => {
   const oldMainCategory = req.query.old_main_category_name;
 
-  const { main_category_name, main_category_slug, main_category_image } = req.body;
+  const { main_category_name, main_category_slug, main_category_image } =
+    req.body;
   console.log(oldMainCategory);
   console.log(req.body);
   try {
@@ -266,14 +294,26 @@ const deleteImage = async (req, res) => {
 // get all category
 const getAllCategory = async (req, res) => {
   try {
-    const countCategory = await Brands_Schema.find({}).count();
+    // const countCategory = await Brands_Schema.find({ isBrand: false }).count();
+    let countCategory = 0;
     const categoryForFilter = await Brands_Schema.aggregate([
       { $group: { _id: "$main_category_name" } },
     ]).sort({ _id: 1 });
     //  console.log(categoryForFilter)
-    const allCategory = await Brands_Schema.find({});
+    const allCategory = await Brands_Schema.find();
+
+    let category = [];
+
+    allCategory?.forEach((ele) => {
+      if (ele.isBrand == false) {
+        category.push(ele);
+        countCategory += 1;
+      }
+    });
+    // console.log("allCategory", allCategory?.isBrand);
+
     res.status(200).send({
-      all_categories: allCategory,
+      all_categories: category,
       countCategory: countCategory,
       categoryForFilter: categoryForFilter,
     });
@@ -447,7 +487,7 @@ exports.getAllCategory = getAllCategory;
 exports.getCategoryByMainCategory = getCategoryByMainCategory;
 exports.createCategory = createCategory;
 exports.addNewBrand = addNewBrand;
-exports.getBrands = getBrands
+exports.getBrands = getBrands;
 exports.updateMainCategory = updateMainCategory;
 exports.editCategory = editCategory;
 exports.getCategorysById = getCategoryById;
@@ -457,3 +497,4 @@ exports.mainCategoryForProduct = mainCategoryForProduct;
 exports.deleteImage = deleteImage;
 exports.deleteCategory = deleteCategory;
 exports.createMainCategory = createMainCategory;
+exports.updateBrand = updateBrand
