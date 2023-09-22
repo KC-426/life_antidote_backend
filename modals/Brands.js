@@ -8,7 +8,6 @@ const Brands_Schema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    
     main_category_slug: {
       type: String,
     },
